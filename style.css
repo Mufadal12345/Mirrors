@@ -1,0 +1,158 @@
+/* filename: style.css */
+
+/* التعريفات الأساسية والمتغيرات */
+:root {
+    --primary-color: #4e73df; /* Indigo */
+    --secondary-color: #1cc88a; /* Emerald */
+    --bg-light: #f8f9fc;
+    --text-color: #3a3b45;
+    --font-family: 'Cairo', sans-serif;
+    --transition: all 0.3s ease;
+}
+
+/* إعادة تعيين وإعدادات عامة */
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-light);
+    color: var(--text-color);
+    direction: rtl;
+    text-align: right;
+    overflow-x: hidden; /* منع التمرير الأفقي */
+    min-height: 100vh;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* تخصيصات العناوين والخطوط */
+h1, h2, h3, h4, h5, h6, .fw-bold {
+    font-weight: 700 !important;
+}
+
+/* شاشة التحميل */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: var(--transition);
+}
+
+.loader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* تنسيقات البطاقات (Cards) */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e3e6f0;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1rem 1.5rem;
+}
+
+/* تنسيقات الأزرار */
+.btn {
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #375acd;
+    border-color: #375acd;
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* تنسيقات حقول الإدخال */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d3e2;
+}
+
+.form-control:focus {
+    border-color: #bac8f3;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* تخصيص شريط التمرير (Slider) */
+.form-range::-webkit-slider-thumb {
+    background: var(--primary-color);
+}
+
+.form-range::-moz-range-thumb {
+    background: var(--primary-color);
+}
+
+.slider-value {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* تحسينات للتجاوب على الجوال */
+@media (max-width: 576px) {
+    #app-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    
+    .btn {
+        width: 100%; /* أزرار بكامل العرض على الجوال */
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* تأثيرات الانتقال البسيطة */
+.page-fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* تخصيص لرسائل التنبيه (Toasts) */
+.toast-container {
+    z-index: 10000;
+}
