@@ -4,43 +4,35 @@ import { auth } from './auth.js';
 import { dbOps } from './db.js';
 import { ui, utils, defaultQuestionsPool } from './utils.js';
 
+// [تشخيص] - رسالة تبين أن الملف تم تحميله
+console.log("✅ ملف app.js تم تحميله بنجاح.");
+
 // بدء التطبيق عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
+    // [تشخيص] - رسالة تبين أن الـ DOM جاهز
+    console.log("✅ الـ DOM جاهز تماماً.");
+
+    // التحقق من وجود الحاوية الرئيسية
+    const contentDiv = document.getElementById('app-content');
+    if (!contentDiv) {
+        console.error("❌ خطأ كارثي: لم يتم العثور على العنصر #app-content في الـ DOM.");
+        return;
+    } else {
+        console.log("✅ تم العثور على الحاوية الرئيسية #app-content.");
+    }
+
     // تشغيل الـ Routing لأول مرة لعرض الصفحة المناسبة بناءً على URL
+    console.log("🔄 جاري تشغيل الـ Router الأولي...");
     router.handleRoute();
 
     // -- ربط الأحداث ديناميكياً باستخدام تفويض الأحداث (Event Delegation) --
     // نستمع للأحداث على الحاوية الرئيسية التي لا تتغير وهي `#app-content`
-    const contentDiv = document.getElementById('app-content');
 
-    // 1. نموذج التسجيل
-    contentDiv.addEventListener('submit', async (e) => {
-        if (e.target.id === 'register-form') {
-            e.preventDefault();
-            const displayName = document.getElementById('reg-display-name').value;
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-password').value;
-            
-            if (password.length < 4) {
-                ui.showToast('خطأ', 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.', 'danger');
-                return;
-            }
-            await auth.register(username, password, displayName);
-        }
-    });
-
-    // 2. نموذج تسجيل الدخول
-    contentDiv.addEventListener('submit', async (e) => {
-        if (e.target.id === 'login-form') {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            await auth.login(username, password);
-        }
-    });
-
-    // 3. [جديد] - مستمع لحدث الضغط للتنقل بين الصفحات (Home Page)
+    // [جديد وتشخيص] - مستمع لحدث الضغط للتنقل بين الصفحات (Home Page)
     contentDiv.addEventListener('click', (e) => {
+        // [تشخيص] - رسالة عند كل ضغطة في منطقة المحتوى
+        console.log("🖱️ تم اكتشاف ضغطة داخل #app-content على العنصر:", e.target);
+
         // التحقق مما إذا كان العنصر الذي تم الضغط عليه (أو أبوه) هو أحد الأزرار المعنية
         const registerBtn = e.target.closest('#home-register-btn');
         const loginBtn = e.target.closest('#home-login-btn');
@@ -62,17 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const toResultsBtn = e.target.closest('#to-results-btn');
 
         if (registerBtn || toRegisterLink) {
+            console.log("👉 تم الضغط على زر 'التسجيل'. جاري الانتقال...");
             if(toRegisterLink) e.preventDefault(); // منع سلوك الرابط الافتراضي
             router.navigate('/register');
         } 
         else if (loginBtn || toLoginLink) {
+            console.log("👉 تم الضغط على زر 'تسجيل الدخول'. جاري الانتقال...");
             if(toLoginLink) e.preventDefault();
             router.navigate('/login');
         } 
         else if (shareBtn || toShareBtn || toShareBtn2) {
+            console.log("👉 تم الضغط على زر 'المشاركة'. جاري الانتقال...");
             router.navigate('/share');
         } 
         else if (resultsBtn || toResultsBtn) {
+            console.log("👉 تم الضغط على زر 'النتائج'. جاري الانتقال...");
             router.navigate('/results');
         }
         else if (thankYouHomeBtn) {
@@ -92,11 +88,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 1. نموذج التسجيل
+    contentDiv.addEventListener('submit', async (e) => {
+        if (e.target.id === 'register-form') {
+            e.preventDefault();
+            console.log("📤 جاري إرسال نموذج التسجيل...");
+            const displayName = document.getElementById('reg-display-name').value;
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            
+            if (password.length < 4) {
+                ui.showToast('خطأ', 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.', 'danger');
+                return;
+            }
+            await auth.register(username, password, displayName);
+        }
+    });
+
+    // 2. نموذج تسجيل الدخول
+    contentDiv.addEventListener('submit', async (e) => {
+        if (e.target.id === 'login-form') {
+            e.preventDefault();
+            console.log("📤 جاري إرسال نموذج تسجيل الدخول...");
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            await auth.login(username, password);
+        }
+    });
+
     // 4. حفظ الأسئلة المخصصة (Create Page)
     contentDiv.addEventListener('click', async (e) => {
         // الضغط على زر حفظ الأسئلة أو أبوه (في حالة الأيقونة)
         if (e.target.closest('#save-questions-btn')) {
             if (!auth.isAuthenticated()) return;
+            console.log("📥 جاري حفظ الأسئلة المخصصة...");
             
             // جمع الـ IDs للأسئلة المختارة
             const selectedQuestionIds = Array.from(document.querySelectorAll('.question-switcher:checked'))
@@ -123,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     contentDiv.addEventListener('submit', async (e) => {
         if (e.target.id === 'survey-form') {
             e.preventDefault();
+            console.log("📤 جاري إرسال استبيان المشارك...");
             
             // الحصول على الـ targetUserId من الرابط الحالي
             const path = window.location.pathname;
@@ -190,6 +216,7 @@ document.addEventListener('chartsInitialized', () => {
     aiBtn.addEventListener('click', async () => {
         if (!auth.isAuthenticated()) return;
         
+        console.log("🤖 جاري طلب تحليل الذكاء الاصطناعي...");
         const user = auth.getCurrentUser();
         const aiLoader = document.getElementById('ai-loader');
         const placeholder = document.getElementById('ai-placeholder-text');
